@@ -198,6 +198,9 @@
           <el-form-item label="用户账号" prop="username">
             <el-input v-model="form.username" placeholder="请输入用户账号" style="width: 240px" />
           </el-form-item>
+          <el-form-item label="真实姓名" prop="realName">
+            <el-input v-model="form.realName" placeholder="请输入真实姓名" style="width: 240px" />
+          </el-form-item>
           <el-form-item label="用户昵称" prop="nickname">
             <el-input v-model="form.nickname" placeholder="请输入用户昵称" style="width: 240px" />
           </el-form-item>
@@ -342,6 +345,9 @@
         <el-row :span="8">
           <el-form-item label="用户账号">
             <el-input v-model="form.username" placeholder="" style="width: 240px" />
+          </el-form-item>
+          <el-form-item label="真实姓名">
+            <el-input v-model="form.realName" placeholder="" style="width: 240px" />
           </el-form-item>
           <el-form-item label="用户昵称">
             <el-input v-model="form.nickname" placeholder="" style="width: 240px" />
