@@ -51,6 +51,38 @@ export const updateAiStock = (data: StockForm) => {
   });
 };
 
+export const aiBuy = (data: any) => {
+  return request({
+    url: '/order/aiOrder/buy',
+    method: 'post',
+    data: data
+  });
+};
+
+export const aiSell = (id: string | number) => {
+  return request({
+    url: '/order/aiOrder/sell',
+    method: 'get',
+    params: { id }
+  });
+};
+
+export const aiEnd = (id: string | number) => {
+  return request({
+    url: '/order/aiOrder/end',
+    method: 'get',
+    params: { id }
+  });
+};
+
+export const getAiOrderList = (query: any) => {
+  return request({
+    url: '/order/aiOrder/aiOrderList',
+    method: 'get',
+    params: query
+  });
+};
+
 /**
  * 删除股票产品
  * @param id
