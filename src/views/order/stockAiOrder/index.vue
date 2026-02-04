@@ -81,7 +81,7 @@
             <!-- <el-tooltip content="修改" placement="top" v-if="scope.row.status != 1 && scope.row.status != 2">
               <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['order:stockAiOrder:audit']"></el-button>
             </el-tooltip> -->
-            <el-tooltip content="结束" placement="top">
+            <el-tooltip content="结束" placement="top" v-if="scope.row.status != 2">
               <el-button link type="primary" icon="SwitchButton" @click="handleEnd(scope.row)"></el-button>
             </el-tooltip>
             <el-tooltip content="AI订单列表" placement="top">
@@ -143,21 +143,25 @@
     </el-dialog>
 
     <!-- Orders Drawer -->
-    <el-drawer v-model="drawerVisible" title="AI订单列表" size="50%">
+    <el-drawer v-model="drawerVisible" title="AI订单列表" size="60%">
       <div class="mb-4">
         <el-button type="primary" @click="handleBuy">下单</el-button>
       </div>
       <el-table :data="orderList" v-loading="drawerLoading">
-        <el-table-column label="id" prop="id" />
         <el-table-column label="股票id" prop="stockId" />
         <el-table-column label="股票名称" prop="stockName" />
         <el-table-column label="股票代码" prop="stockCode" />
-        <el-table-column label="买入价格" prop="buyPrice" />
-        <el-table-column label="买入数量" prop="buyNum" />
-        <el-table-column label="买入时间" prop="buyTime" />
+        <el-table-column label="买入价格" prop="price" />
+        <el-table-column label="买入数量" prop="num" />
+        <el-table-column label="买入时间" prop="createTime" />
+        <el-table-column label="订单状态" align="center" prop="status">
+          <template #default="scope">
+            <dict-tag :options="aiOrderStatus" :value="scope.row.status" />
+          </template>
+        </el-table-column>
         <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
           <template #default="scope">
-            <el-button link type="primary" @click="handleSell(scope.row)">卖出</el-button>
+            <el-button link type="primary" @click="handleSell(scope.row)" v-if="scope.row.status == 2">卖出</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -189,7 +193,7 @@
             <el-input v-model.number="buyParams.num" min="100" type="number" placeholder="请输入中标数量" style="width: 240px" />
           </el-form-item>
           <el-form-item label="中标价格" prop="price">
-            <el-input v-model.number="buyParams.price" type="number" placeholder="请输入中标价格" style="width: 240px" />
+            <el-input v-model="buyParams.price" type="number" placeholder="请输入中标价格" style="width: 240px" />
           </el-form-item>
         </el-row>
         <el-row>
@@ -307,7 +311,7 @@ const data = reactive<PageData<StockForm, StockQuery>>({
     ],
     price: [
       { required: true, message: "中标价格不能为空", trigger: "blur" },
-      { type: "number", message: "请输入有效的中标价格", min: 0, trigger: "blur" }
+      // { type: "number", message: "请输入有效的中标价格", min: 0, trigger: "blur" }
     ]
   }
 });
@@ -322,12 +326,12 @@ const aiStatus = ref([
     "elTagType": "default",
     "elTagClass": ""
   },{
-    "label": "审核成功",
+    "label": "进行中",
     "value": "1",
     "elTagType": "default",
     "elTagClass": ""
   },{
-    "label": "拒绝",
+    "label": "结束",
     "value": "2",
     "elTagType": "default",
     "elTagClass": ""
@@ -359,6 +363,13 @@ const aiReviewStatus = ref([
     "elTagType": "default",
     "elTagClass": ""
   }
+])
+
+const aiOrderStatus = ref([
+  { label: "交易中", value: "1", elTagType: "primary", elTagClass: "" },
+  { label: "交易成功", value: "2", elTagType: "success", elTagClass: "" },
+  { label: "交易取消", value: "3", elTagType: "info", elTagClass: "" },
+  { label: "交易结束", value: "4", elTagType: "warning", elTagClass: "" }
 ])
 
 /** 查询股票产品列表 */
